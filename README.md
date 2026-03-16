@@ -48,7 +48,7 @@ Shelby Media Vault is a concept application that demonstrates how creators can u
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/shelby-media-vault.git
+git clone https://github.com/cepuyut/shelby-media-vault.git
 cd shelby-media-vault
 
 # Install dependencies
