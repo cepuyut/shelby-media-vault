@@ -1,50 +1,28 @@
 import React, { useState } from 'react';
+import { useWallet } from '@aptos-labs/wallet-adapter-react';
 
 function WalletConnect(props) {
-  var onConnect = props.onConnect;
-  var showDemo = useState(false);
-  var isShowDemo = showDemo[0];
-  var setShowDemo = showDemo[1];
-  var connectState = useState(false);
-  var connecting = connectState[0];
-  var setConnecting = connectState[1];
+  var onDemo = props.onDemo;
+  var wallet = useWallet();
+  var wallets = wallet.wallets || [];
+  var connect = wallet.connect;
 
-  var handleConnect = function() {
+  var connectingState = useState(false);
+  var connecting = connectingState[0];
+  var setConnecting = connectingState[1];
+  var errorState = useState('');
+  var error = errorState[0];
+  var setError = errorState[1];
+
+  var handleConnect = function(walletName) {
     setConnecting(true);
-    setTimeout(function() {
-      var wallet = window.petra || window.aptos;
-      if (wallet && typeof wallet.connect === 'function') {
-        try {
-          wallet.connect({ silent: false }).then(function(response) {
-            onConnect(String(response.address || ''), false);
-            setConnecting(false);
-          }).catch(function() {
-            if (wallet.signIn) {
-              wallet.signIn().then(function(response) {
-                onConnect(String(response.address || ''), false);
-                setConnecting(false);
-              }).catch(function() {
-                setShowDemo(true);
-                setConnecting(false);
-              });
-            } else {
-              setShowDemo(true);
-              setConnecting(false);
-            }
-          });
-        } catch(e) {
-          setShowDemo(true);
-          setConnecting(false);
-        }
-      } else {
-        setShowDemo(true);
-        setConnecting(false);
-      }
-    }, 1000);
-  };
-
-  var handleDemo = function() {
-    onConnect('0x7a8f3b2c1d4e5f6a9b0c1d2e3f4a5b6c7d8e9f0a', true);
+    setError('');
+    connect(walletName).then(function() {
+      setConnecting(false);
+    }).catch(function(err) {
+      setError(String(err && err.message ? err.message : 'Connection failed'));
+      setConnecting(false);
+    });
   };
 
   var features = [
@@ -76,12 +54,9 @@ function WalletConnect(props) {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] text-center">
-
-      {/* Hero section with Ziyama */}
       <div className="relative w-full max-w-5xl mx-auto mb-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
 
-          {/* Text side */}
           <div className="flex-1 text-left md:text-left animate-fade-up">
             <div className="inline-flex items-center gap-2 bg-pink-500/10 border border-pink-800/20 rounded-full px-4 py-1.5 mb-6">
               <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse"></span>
@@ -100,48 +75,52 @@ function WalletConnect(props) {
               The all-in-one decentralized media platform. Store, showcase, monetize, and deliver your content on the fastest hot storage network.
             </p>
 
-            {!isShowDemo ? (
-              <div>
-                <button
-                  onClick={handleConnect}
-                  disabled={connecting}
-                  className="bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-500 hover:to-pink-400 text-white px-8 py-3 rounded-2xl text-sm font-bold transition-all hover:shadow-xl hover:shadow-pink-900/30 active:scale-95"
+            <div className="space-y-3 max-w-sm">
+              {wallets.length > 0 ? (
+                <div>
+                  {wallets.map(function(w) {
+                    var wName = w.name || 'Unknown';
+                    var wIcon = w.icon || '';
+                    return (
+                      <button
+                        key={wName}
+                        onClick={function() { handleConnect(wName); }}
+                        disabled={connecting}
+                        className="w-full flex items-center gap-3 bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-500 hover:to-pink-400 text-white px-6 py-3 rounded-2xl text-sm font-bold transition-all hover:shadow-xl hover:shadow-pink-900/30 active:scale-95 mb-2"
+                        style={{ fontFamily: 'Quicksand, sans-serif' }}
+                      >
+                        {wIcon && <img src={wIcon} alt={wName} className="w-5 h-5 rounded" />}
+                        {connecting ? 'Connecting...' : 'Connect ' + wName}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <a
+                  href="https://petra.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-500 hover:to-pink-400 text-white px-8 py-3 rounded-2xl text-sm font-bold transition-all hover:shadow-xl hover:shadow-pink-900/30"
                   style={{ fontFamily: 'Quicksand, sans-serif' }}
                 >
-                  {connecting ? 'Connecting...' : 'Connect Petra Wallet'}
-                </button>
-                <p className="text-gray-600 text-xs mt-3" style={{ fontFamily: 'Quicksand, sans-serif' }}>
-                  {"Wallet Adapter coming soon \u00B7 "}
-                  <button onClick={function() { setShowDemo(true); }} className="text-pink-400 hover:underline">
-                    Try Demo Mode
-                  </button>
-                </p>
-              </div>
-            ) : (
-              <div className="bg-[#140f1e] border border-pink-900/20 rounded-2xl p-5 max-w-sm">
-                <p className="text-amber-400 text-sm font-semibold mb-2" style={{ fontFamily: 'Quicksand, sans-serif' }}>Wallet Adapter coming soon</p>
-                <p className="text-gray-400 text-xs mb-4" style={{ fontFamily: 'Quicksand, sans-serif' }}>Full Aptos Wallet Standard integration is in progress. Try demo mode to explore all features now.</p>
-                <div className="flex gap-2">
-                  <a
-                    href="https://petra.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-[#1a1428] hover:bg-pink-900/20 text-pink-400 px-4 py-2 rounded-xl text-xs font-semibold transition-all border border-pink-900/20"
-                  >
-                    Get Petra
-                  </a>
-                  <button
-                    onClick={handleDemo}
-                    className="bg-gradient-to-r from-pink-600 to-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all hover:shadow-lg hover:shadow-pink-900/30"
-                  >
-                    Try Demo Mode
-                  </button>
-                </div>
-              </div>
-            )}
+                  Install Petra Wallet
+                </a>
+              )}
+
+              {error && (
+                <p className="text-red-400 text-xs">{error}</p>
+              )}
+
+              <button
+                onClick={onDemo}
+                className="text-pink-400 hover:text-pink-300 text-xs font-semibold transition-colors"
+                style={{ fontFamily: 'Quicksand, sans-serif' }}
+              >
+                Or try Demo Mode
+              </button>
+            </div>
           </div>
 
-          {/* Ziyama character side */}
           <div className="flex-1 flex justify-center md:justify-end animate-fade-up delay-200">
             <div className="relative">
               <div className="absolute -inset-4 bg-gradient-to-b from-pink-500/20 via-transparent to-transparent rounded-3xl blur-2xl"></div>
@@ -156,7 +135,6 @@ function WalletConnect(props) {
         </div>
       </div>
 
-      {/* Feature cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-4xl mt-8 animate-fade-up delay-300">
         {features.map(function(feature) {
           return (
@@ -174,7 +152,6 @@ function WalletConnect(props) {
         })}
       </div>
 
-      {/* Bottom badges */}
       <div className="mt-14 flex items-center gap-5 text-xs text-gray-600" style={{ fontFamily: 'Quicksand, sans-serif' }}>
         <span className="flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-pink-500"></span>
