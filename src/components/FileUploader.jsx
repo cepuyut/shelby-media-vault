@@ -100,4 +100,17 @@ function FileUploader({ onUpload }) {
           { step: '01', title: 'Chunk', desc: 'Split into ~10 MiB chunksets' },
           { step: '02', title: 'Encode', desc: 'Clay erasure coding (m=16, k=10)' },
           { step: '03', title: 'Distribute', desc: 'Send to storage providers via fiber' },
-          { step: '04', title: 'Commit
+          { step: '04', title: 'Commit', desc: 'Record merkle root on Aptos' },
+        ].map((item) => (
+          <div key={item.step} className="bg-gray-900/20 border border-gray-800/30 rounded-xl p-4">
+            <span className="text-purple-500 font-mono text-[10px] font-bold">{item.step}</span>
+            <h4 className="text-white font-medium text-sm mt-1.5">{item.title}</h4>
+            <p className="text-gray-600 text-xs mt-0.5">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default FileUploader;
