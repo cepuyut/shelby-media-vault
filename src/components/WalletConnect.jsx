@@ -4,7 +4,7 @@ import { useWallet } from '@aptos-labs/wallet-adapter-react';
 function WalletConnect(props) {
   var onDemo = props.onDemo;
   var wallet = useWallet();
-  var wallets = wallet.wallets || [];
+  var wallets = (wallet.wallets || []).filter(function(w) { return w.name === 'Petra'; });
   var connect = wallet.connect;
 
   var connectingState = useState(false);
