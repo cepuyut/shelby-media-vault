@@ -11,8 +11,9 @@ function WalletConnect(props) {
 
   var handleConnect = function() {
     setConnecting(true);
-    if (window.aptos) {
-      window.aptos.connect().then(function(response) {
+    var wallet = window.petra || window.aptos;
+    if (wallet) {
+      wallet.connect().then(function(response) {
         onConnect(response.address, false);
         setConnecting(false);
       }).catch(function() {
