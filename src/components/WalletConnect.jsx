@@ -11,19 +11,21 @@ function WalletConnect(props) {
 
   var handleConnect = function() {
     setConnecting(true);
-    var wallet = window.petra || window.aptos;
-    if (wallet) {
-      wallet.connect().then(function(response) {
-        onConnect(response.address, false);
-        setConnecting(false);
-      }).catch(function() {
+    setTimeout(function() {
+      if ('aptos' in window) {
+        window.aptos.connect().then(function(response) {
+          onConnect(response.address, false);
+          setConnecting(false);
+        }).catch(function(err) {
+          console.log('Connect error:', err);
+          setShowDemo(true);
+          setConnecting(false);
+        });
+      } else {
         setShowDemo(true);
         setConnecting(false);
-      });
-    } else {
-      setShowDemo(true);
-      setConnecting(false);
-    }
+      }
+    }, 1000);
   };
 
   var handleDemo = function() {
