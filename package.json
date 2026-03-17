@@ -1,15 +1,17 @@
 {
   "name": "shelby-media-vault",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "description": "Decentralized media storage app built on Shelby Protocol",
+  "description": "All-in-one decentralized media platform built on Shelby Protocol",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aptos-labs/wallet-adapter-react": "^3.0.0",
+    "@aptos-labs/ts-sdk": "^1.0.0",
     "@shelby-protocol/sdk": "^0.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -28,8 +30,7 @@
     "decentralized-storage",
     "aptos",
     "web3",
-    "media-vault",
-    "hot-storage"
+    "media-vault"
   ],
   "author": "fatitihlara",
   "license": "MIT"
