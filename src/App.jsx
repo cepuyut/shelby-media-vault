@@ -10,23 +10,14 @@ import WalletConnect from './components/WalletConnect';
 function App() {
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
+  const [isDemo, setIsDemo] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [files, setFiles] = useState([]);
 
-  const handleWalletConnect = async () => {
-    try {
-      if (window.aptos) {
-        const response = await window.aptos.connect();
-        setWalletAddress(response.address);
-        setWalletConnected(true);
-      } else {
-        setWalletAddress('0x7a8f3b2c1d4e5f6a9b0c1d2e3f4a5b6c7d8e9f0a');
-        setWalletConnected(true);
-      }
-    } catch (error) {
-      setWalletAddress('0x7a8f3b2c1d4e5f6a9b0c1d2e3f4a5b6c7d8e9f0a');
-      setWalletConnected(true);
-    }
+  const handleWalletConnect = (address, demo) => {
+    setWalletAddress(address);
+    setIsDemo(demo);
+    setWalletConnected(true);
   };
 
   const handleFileUpload = (newFile) => {
@@ -52,7 +43,8 @@ function App() {
       <Navbar
         walletConnected={walletConnected}
         walletAddress={walletAddress}
-        onConnect={handleWalletConnect}
+        isDemo={isDemo}
+        onConnect={() => { setWalletConnected(false); setIsDemo(false); }}
         activeTab={activeTab}
         onTabChange={setActiveTab}
       />
