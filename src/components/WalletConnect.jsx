@@ -89,8 +89,8 @@ function WalletConnect(props) {
         </div>
       ) : (
         <div className="bg-gray-900/50 border border-gray-800/50 rounded-2xl p-6 max-w-md w-full">
-          <p className="text-amber-400 text-sm font-medium mb-2">Petra Wallet not detected</p>
-          <p className="text-gray-400 text-sm mb-5">Install Petra to connect with Aptos testnet, or try demo mode to explore the app.</p>
+          <p className="text-amber-400 text-sm font-medium mb-2">Wallet Adapter coming soon</p>
+          <p className="text-gray-400 text-sm mb-5">Full Aptos Wallet Standard integration is in progress. Try demo mode to explore all features now.</p>
           <div className="flex gap-3 justify-center">
             <a
               href="https://petra.app/"
