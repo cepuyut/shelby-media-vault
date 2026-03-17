@@ -12,7 +12,6 @@
   "dependencies": {
     "@aptos-labs/wallet-adapter-react": "^3.0.0",
     "@aptos-labs/ts-sdk": "^1.0.0",
-    "@shelby-protocol/sdk": "^0.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "lucide-react": "^0.383.0"
