@@ -14,13 +14,28 @@ function WalletConnect(props) {
     setTimeout(function() {
       var wallet = window.petra || window.aptos;
       if (wallet && typeof wallet.connect === 'function') {
-        wallet.connect().then(function(response) {
-          onConnect(String(response.address || ''), false);
-          setConnecting(false);
-        }).catch(function() {
+        try {
+          wallet.connect({ silent: false }).then(function(response) {
+            onConnect(String(response.address || ''), false);
+            setConnecting(false);
+          }).catch(function() {
+            if (wallet.signIn) {
+              wallet.signIn().then(function(response) {
+                onConnect(String(response.address || ''), false);
+                setConnecting(false);
+              }).catch(function() {
+                setShowDemo(true);
+                setConnecting(false);
+              });
+            } else {
+              setShowDemo(true);
+              setConnecting(false);
+            }
+          });
+        } catch(e) {
           setShowDemo(true);
           setConnecting(false);
-        });
+        }
       } else {
         setShowDemo(true);
         setConnecting(false);
